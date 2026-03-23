@@ -19,5 +19,15 @@ def index():
     return render_template("index.html")
 
 
+@app.route("/positivos")
+def positivos():
+    return render_template("positivos.html")
+
+
+@app.route("/negativos")
+def negativos():
+    return render_template("negativos.html")
+
+
 if __name__ == "__main__":
     app.run(host=Config.HOST, port=Config.PORT, debug=Config.DEBUG)

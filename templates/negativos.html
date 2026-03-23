@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Negativos - Líquiya</title>
+    <link rel="stylesheet" href="/static/css/styles.css">
+</head>
+<body>
+    <nav class="nav-menu">
+        <div class="nav-brand">📦 Líquiya</div>
+        <ul class="nav-links">
+            <li><a href="/">Grid Principal</a></li>
+            <li><a href="/positivos">📈 Positivos</a></li>
+            <li><a href="/negativos" class="active">📉 Negativos</a></li>
+        </ul>
+        <div class="nav-refresh">
+            <a href="/" class="btn btn-outline-white">← Volver</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="table-container">
+            <table id="inventory-table">
+                <thead>
+                    <tr>
+                        <th>Código</th>
+                        <th>Producto</th>
+                        <th>Unidades</th>
+                        <th>Subunidades</th>
+                    </tr>
+                </thead>
+                <tbody id="table-body">
+                    <tr><td colspan="4" class="loading">Cargando datos...</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="footer">
+            <span id="total-count">Total: 0 registros</span>
+        </div>
+    </div>
+
+    <script>
+        async function loadData() {
+            try {
+                const response = await fetch('/api/negativos');
+                const result = await response.json();
+                
+                const tbody = document.getElementById('table-body');
+                const total = document.getElementById('total-count');
+                
+                if (!result.success || result.data.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="4" class="loading">No hay negativos</td></tr>';
+                    total.textContent = 'Total: 0 registros';
+                    return;
+                }
+                
+                tbody.innerHTML = result.data.map(item => `
+                    <tr>
+                        <td>${item.codigo}</td>
+                        <td>${item.nombre}</td>
+                        <td class="diferencia-negativa">-${item.unidades}</td>
+                        <td class="diferencia-negativa">-${item.subunidades}</td>
+                    </tr>
+                `).join('');
+                
+                total.textContent = `Total: ${result.data.length} registros`;
+            } catch (error) {
+                document.getElementById('table-body').innerHTML = 
+                    '<tr><td colspan="4" class="loading">Error al cargar datos</td></tr>';
+            }
+        }
+        
+        loadData();
+    </script>
+</body>
+</html>

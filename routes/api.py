@@ -17,14 +17,14 @@ def allowed_file(filename):
 
 @api_bp.route("/files/status", methods=["GET"])
 def files_status():
-    inventario = os.path.join(UPLOAD_FOLDER, "inventario.xlsx")
+    liquiya = os.path.join(UPLOAD_FOLDER, "liquiya.xlsx")
     plantilla = os.path.join(UPLOAD_FOLDER, "plantilla.xlsx")
     
-    has_files = os.path.exists(inventario) and os.path.exists(plantilla)
+    has_files = os.path.exists(liquiya) and os.path.exists(plantilla)
     fecha = None
     
     if has_files:
-        mtime = os.path.getmtime(inventario)
+        mtime = os.path.getmtime(liquiya)
         from datetime import datetime
         fecha = datetime.fromtimestamp(mtime).strftime("%Y-%m-%d %H:%M")
     
@@ -37,19 +37,19 @@ def files_status():
 
 @api_bp.route("/files/upload", methods=["POST"])
 def upload_files():
-    if "inventario" not in request.files or "plantilla" not in request.files:
+    if "liquiya" not in request.files or "plantilla" not in request.files:
         return jsonify({"success": False, "error": "Faltan archivos"}), 400
     
-    inventario = request.files["inventario"]
+    liquiya = request.files["liquiya"]
     plantilla = request.files["plantilla"]
     
-    if inventario.filename == "" or plantilla.filename == "":
+    if liquiya.filename == "" or plantilla.filename == "":
         return jsonify({"success": False, "error": "Archivos vacíos"}), 400
     
-    inventario_path = os.path.join(UPLOAD_FOLDER, "inventario.xlsx")
+    liquiya_path = os.path.join(UPLOAD_FOLDER, "liquiya.xlsx")
     plantilla_path = os.path.join(UPLOAD_FOLDER, "plantilla.xlsx")
     
-    inventario.save(inventario_path)
+    liquiya.save(liquiya_path)
     plantilla.save(plantilla_path)
     
     excel_service.clear_cache()
@@ -59,11 +59,11 @@ def upload_files():
 
 @api_bp.route("/files/clear", methods=["POST"])
 def clear_files():
-    inventario = os.path.join(UPLOAD_FOLDER, "inventario.xlsx")
+    liquiya = os.path.join(UPLOAD_FOLDER, "liquiya.xlsx")
     plantilla = os.path.join(UPLOAD_FOLDER, "plantilla.xlsx")
     
-    if os.path.exists(inventario):
-        os.remove(inventario)
+    if os.path.exists(liquiya):
+        os.remove(liquiya)
     if os.path.exists(plantilla):
         os.remove(plantilla)
     
@@ -74,12 +74,38 @@ def clear_files():
 
 @api_bp.route("/inventario", methods=["GET"])
 def get_inventario():
-    inventario = os.path.join(UPLOAD_FOLDER, "inventario.xlsx")
+    liquiya = os.path.join(UPLOAD_FOLDER, "liquiya.xlsx")
     plantilla = os.path.join(UPLOAD_FOLDER, "plantilla.xlsx")
     
-    if not (os.path.exists(inventario) and os.path.exists(plantilla)):
+    if not (os.path.exists(liquiya) and os.path.exists(plantilla)):
         return jsonify({"success": False, "error": "Archivos no encontrados"}), 404
     
-    excel_service.set_paths(inventario, plantilla)
+    excel_service.set_paths(liquiya, plantilla)
     data = excel_service.get_inventario_data()
     return jsonify({"success": True, "data": data, "total": len(data)})
+
+
+@api_bp.route("/positivos", methods=["GET"])
+def get_positivos():
+    liquiya = os.path.join(UPLOAD_FOLDER, "liquiya.xlsx")
+    plantilla = os.path.join(UPLOAD_FOLDER, "plantilla.xlsx")
+    
+    if not (os.path.exists(liquiya) and os.path.exists(plantilla)):
+        return jsonify({"success": False, "error": "Archivos no encontrados"}), 404
+    
+    excel_service.set_paths(liquiya, plantilla)
+    positivos, _ = excel_service.get_positivos_negativos()
+    return jsonify({"success": True, "data": positivos, "total": len(positivos)})
+
+
+@api_bp.route("/negativos", methods=["GET"])
+def get_negativos():
+    liquiya = os.path.join(UPLOAD_FOLDER, "liquiya.xlsx")
+    plantilla = os.path.join(UPLOAD_FOLDER, "plantilla.xlsx")
+    
+    if not (os.path.exists(liquiya) and os.path.exists(plantilla)):
+        return jsonify({"success": False, "error": "Archivos no encontrados"}), 404
+    
+    excel_service.set_paths(liquiya, plantilla)
+    _, negativos = excel_service.get_positivos_negativos()
+    return jsonify({"success": True, "data": negativos, "total": len(negativos)})

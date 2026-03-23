@@ -76,7 +76,7 @@ class InventoryApp {
             this.btnProcess.textContent = 'Subiendo...';
 
             const formData = new FormData();
-            formData.append('inventario', this.fileInventario.files[0]);
+            formData.append('liquiya', this.fileInventario.files[0]);
             formData.append('plantilla', this.filePlantilla.files[0]);
 
             const response = await fetch('/api/files/upload', {

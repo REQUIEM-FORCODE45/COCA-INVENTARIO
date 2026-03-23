@@ -14,7 +14,7 @@
         
         <div class="upload-box">
             <div class="file-input-group">
-                <label for="file-inventario">1. Archivo Comparación Inventario Pasto</label>
+                <label for="file-inventario">1. Archivo PLANTILLA LIQUIYA 2026</label>
                 <input type="file" id="file-inventario" accept=".xlsx" class="file-input">
                 <span id="file-inventario-name" class="file-name"></span>
             </div>
@@ -31,69 +31,74 @@
         <div id="upload-error" class="upload-error"></div>
     </div>
 
-    <div id="grid-screen" class="container" style="display: none;">
-        <header class="header">
-            <div>
-                <h1>📦 Inventario - Comparación</h1>
+    <div id="grid-screen" style="display: none;">
+        <nav class="nav-menu">
+            <div class="nav-brand">📦 Líquiya</div>
+            <ul class="nav-links">
+                <li><a href="/" class="active">Grid Principal</a></li>
+                <li><a href="/positivos">📈 Positivos</a></li>
+                <li><a href="/negativos">📉 Negativos</a></li>
+            </ul>
+            <div class="nav-refresh">
+                <button id="btn-refresh" class="btn btn-outline-white">⟳ Actualizar Archivos</button>
+            </div>
+        </nav>
+
+        <div class="container">
+            <div class="filters">
+                <input type="text" id="search" placeholder="Buscar por código o nombre..." class="search-input">
+                <select id="filter-column" class="filter-select">
+                    <option value="all">Todas las columnas</option>
+                    <option value="codigo">Código</option>
+                    <option value="nombre">Nombre</option>
+                </select>
+                <select id="filter-diff-real" class="filter-select">
+                    <option value="all">Todas las diferencias</option>
+                    <option value="positive">Solo positivos</option>
+                    <option value="negative">Solo negativos</option>
+                </select>
+            </div>
+
+            <div class="table-container">
+                <table id="inventory-table">
+                    <thead>
+                        <tr>
+                            <th>Código</th>
+                            <th>Nombre</th>
+                            <th colspan="2">Teórico</th>
+                            <th colspan="2">Físico</th>
+                            <th colspan="2">Piso Real</th>
+                            <th colspan="2">Diferencias</th>
+                            <th colspan="2">Diferencias reales</th>
+                            <th colspan="2">Ajuste liquiya</th>
+                        </tr>
+                        <tr class="subheader">
+                            <th></th>
+                            <th></th>
+                            <th>U</th>
+                            <th>SU</th>
+                            <th>U</th>
+                            <th>SU</th>
+                            <th>U</th>
+                            <th>SU</th>
+                            <th>U</th>
+                            <th>SU</th>
+                            <th>U</th>
+                            <th>SU</th>
+                            <th>U</th>
+                            <th>SU</th>
+                        </tr>
+                    </thead>
+                    <tbody id="table-body">
+                        <tr><td colspan="14" class="loading">Cargando datos...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="footer">
+                <span id="total-count">Total: 0 registros</span>
                 <span id="data-status" class="data-status"></span>
             </div>
-            <div class="header-actions">
-                <button id="btn-refresh" class="btn btn-secondary">⟳ Actualizar Archivos</button>
-            </div>
-        </header>
-
-        <div class="filters">
-            <input type="text" id="search" placeholder="Buscar por código o nombre..." class="search-input">
-            <select id="filter-column" class="filter-select">
-                <option value="all">Todas las columnas</option>
-                <option value="codigo">Código</option>
-                <option value="nombre">Nombre</option>
-            </select>
-            <select id="filter-diff-real" class="filter-select">
-                <option value="all">Todas las diferencias</option>
-                <option value="positive">Solo positivos</option>
-                <option value="negative">Solo negativos</option>
-            </select>
-        </div>
-
-        <div class="table-container">
-            <table id="inventory-table">
-                <thead>
-                    <tr>
-                        <th>Código</th>
-                        <th>Nombre</th>
-                        <th colspan="2">Teórico</th>
-                        <th colspan="2">Físico</th>
-                        <th colspan="2">Piso Real</th>
-                        <th colspan="2">Diferencias</th>
-                        <th colspan="2">Diferencias reales</th>
-                        <th colspan="2">Líquida</th>
-                    </tr>
-                    <tr class="subheader">
-                        <th></th>
-                        <th></th>
-                        <th>U</th>
-                        <th>SU</th>
-                        <th>U</th>
-                        <th>SU</th>
-                        <th>U</th>
-                        <th>SU</th>
-                        <th>U</th>
-                        <th>SU</th>
-                        <th>U</th>
-                        <th>SU</th>
-                        <th>U</th>
-                        <th>SU</th>
-                    </tr>
-                </thead>
-                <tbody id="table-body">
-                    <tr><td colspan="12" class="loading">Cargando datos...</td></tr>
-                </tbody>
-            </table>
-        </div>
-
-        <div class="footer">
-            <span id="total-count">Total: 0 registros</span>
         </div>
     </div>
 
