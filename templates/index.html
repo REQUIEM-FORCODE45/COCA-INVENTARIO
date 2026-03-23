@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inventario - Comparación</title>
+    <link rel="stylesheet" href="/static/css/styles.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+</head>
+<body>
+    <div id="upload-screen" class="upload-container">
+        <h1>📦 Inventario - Comparación</h1>
+        <p class="upload-subtitle">Carga los archivos Excel para generar el informe</p>
+        
+        <div class="upload-box">
+            <div class="file-input-group">
+                <label for="file-inventario">1. Archivo Comparación Inventario Pasto</label>
+                <input type="file" id="file-inventario" accept=".xlsx" class="file-input">
+                <span id="file-inventario-name" class="file-name"></span>
+            </div>
+            
+            <div class="file-input-group">
+                <label for="file-plantilla">2. Archivo PLANTILLA FORMATO 2026</label>
+                <input type="file" id="file-plantilla" accept=".xlsx" class="file-input">
+                <span id="file-plantilla-name" class="file-name"></span>
+            </div>
+            
+            <button id="btn-process" class="btn btn-primary" disabled>Procesar Archivos</button>
+        </div>
+        
+        <div id="upload-error" class="upload-error"></div>
+    </div>
+
+    <div id="grid-screen" class="container" style="display: none;">
+        <header class="header">
+            <div>
+                <h1>📦 Inventario - Comparación</h1>
+                <span id="data-status" class="data-status"></span>
+            </div>
+            <div class="header-actions">
+                <button id="btn-refresh" class="btn btn-secondary">⟳ Actualizar Archivos</button>
+            </div>
+        </header>
+
+        <div class="filters">
+            <input type="text" id="search" placeholder="Buscar por código o nombre..." class="search-input">
+            <select id="filter-column" class="filter-select">
+                <option value="all">Todas las columnas</option>
+                <option value="codigo">Código</option>
+                <option value="nombre">Nombre</option>
+            </select>
+            <select id="filter-diff-real" class="filter-select">
+                <option value="all">Todas las diferencias</option>
+                <option value="positive">Solo positivos</option>
+                <option value="negative">Solo negativos</option>
+            </select>
+        </div>
+
+        <div class="table-container">
+            <table id="inventory-table">
+                <thead>
+                    <tr>
+                        <th>Código</th>
+                        <th>Nombre</th>
+                        <th colspan="2">Teórico</th>
+                        <th colspan="2">Físico</th>
+                        <th colspan="2">Piso Real</th>
+                        <th colspan="2">Diferencias</th>
+                        <th colspan="2">Diferencias reales</th>
+                        <th colspan="2">Líquida</th>
+                    </tr>
+                    <tr class="subheader">
+                        <th></th>
+                        <th></th>
+                        <th>U</th>
+                        <th>SU</th>
+                        <th>U</th>
+                        <th>SU</th>
+                        <th>U</th>
+                        <th>SU</th>
+                        <th>U</th>
+                        <th>SU</th>
+                        <th>U</th>
+                        <th>SU</th>
+                        <th>U</th>
+                        <th>SU</th>
+                    </tr>
+                </thead>
+                <tbody id="table-body">
+                    <tr><td colspan="12" class="loading">Cargando datos...</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="footer">
+            <span id="total-count">Total: 0 registros</span>
+        </div>
+    </div>
+
+    <script src="/static/js/app.js"></script>
+</body>
+</html>
