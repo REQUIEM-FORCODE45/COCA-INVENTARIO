@@ -31,6 +31,7 @@ class InventoryApp {
         this.filePlantilla.addEventListener('change', (e) => this.handleFileSelect(e, 'plantilla'));
         this.btnProcess.addEventListener('click', () => this.uploadFiles());
         document.getElementById('btn-refresh').addEventListener('click', () => this.clearFiles());
+        document.getElementById('btn-export').addEventListener('click', () => this.exportToExcel());
         this.searchInput.addEventListener('input', () => this.filter());
         this.filterColumn.addEventListener('change', () => this.filter());
         document.getElementById('filter-diff-real').addEventListener('change', () => this.filter());
@@ -210,6 +211,63 @@ class InventoryApp {
         if (value > 0) return 'diferencia-positiva';
         if (value < 0) return 'diferencia-negativa';
         return '';
+    }
+
+    exportToExcel() {
+        if (this.filteredData.length === 0) {
+            alert('No hay datos para exportar');
+            return;
+        }
+
+        const headers = ['Código', 'Nombre', 'Teórico U', 'Teórico SU', 'Físico U', 'Físico SU', 'Piso Real U', 'Piso Real SU', 'Diferencias U', 'Diferencias SU', 'Dif. Reales U', 'Dif. Reales SU', 'Líquida U', 'Líquida SU'];
+        
+        const data = this.filteredData.map(item => [
+            item.codigo,
+            item.nombre,
+            item.teorico.unidades,
+            item.teorico.subunidades,
+            item.fisico.unidades,
+            item.fisico.subunidades,
+            item.piso_real.unidades,
+            item.piso_real.subunidades,
+            item.diferencias.unidades,
+            item.diferencias.subunidades,
+            item.diferencias_reales.unidades,
+            item.diferencias_reales.subunidades,
+            item.ajuste_liquido.unidades,
+            item.ajuste_liquido.subunidades
+        ]);
+
+        const ws = XLSX.utils.aoa_to_sheet([headers, ...data]);
+
+        const wscols = [
+            {wch: 10}, {wch: 35}, {wch: 8}, {wch: 8},
+            {wch: 8}, {wch: 8}, {wch: 10}, {wch: 10},
+            {wch: 10}, {wch: 10}, {wch: 10}, {wch: 10},
+            {wch: 10}, {wch: 10}
+        ];
+        ws['!cols'] = wscols;
+
+        const range = XLSX.utils.decode_range(ws['!ref']);
+        for (let R = range.s.r; R <= range.e.r; ++R) {
+            for (let C = range.s.c; C <= range.e.c; ++C) {
+                const cell_ref = XLSX.utils.encode_cell({r: R, c: C});
+                if (!ws[cell_ref]) continue;
+                ws[cell_ref].s = {
+                    font: { bold: R === 0 },
+                    alignment: { horizontal: R === 0 ? 'center' : 'left' }
+                };
+                if (R > 0 && C >= 2) {
+                    ws[cell_ref].s.alignment.horizontal = 'center';
+                }
+            }
+        }
+
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, 'Inventario');
+
+        const fecha = new Date().toISOString().split('T')[0];
+        XLSX.writeFile(wb, `inventario_${fecha}.xlsx`);
     }
 }
 
